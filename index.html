@@ -3,36 +3,183 @@
 <head>
     <link rel="shortcut icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="index.css">
+    <meta charset="UTF-8"/>
     <title>MoBlog</title>
 </head>
 
 <body>
-    <header>
-        <div class="inner-header">
-            <div class="div-logo">
-                <a href="#"><img class="logo" src="logo.png" alt=""></a>
-            </div>
-            <nav>
-                <ul class="menu-top">
-                    <li>
-                        <a href="#">Java</a>
-                    </li>
-                    <li><a href="#">NodeJS</a></li>
-                    <li>
-                        <a href="#">CSS</a>
-                    </li>
-                    <li><a href="#">Algorithm</a>
-                    </li>
-                </ul>
-            </nav>
+<header class=" shadow-needed">
+    <div class="inner-header">
+        <div class="div-logo">
+            <a href="#"><img class="logo" src="logo.png" alt=""></a>
         </div>
-    </header>
-    <!--清除浮动,很重要-->
-    <div style="clear: both;"></div>
-    <div class="container">
+        <nav>
+            <ul class="menu-top">
+                <li>
+                    <a href="#">Java</a>
+                </li>
+                <li>
+                    <a href="#">NodeJS</a>
+                </li>
+                <li>
+                    <a href="#">CSS</a>
+                </li>
+                <li>
+                    <a href="#">Algorithm</a>
+                </li>
+                <li>
+                    <a href="#">About</a>
+                </li>
+            </ul>
+        </nav>
+
+    </div>
+</header>
+<!--清除浮动,很重要-->
+
+
+<div style="clear: both;"></div>
+
+
+<div id="chat-btn">
+    <button class="shadow-needed" onclick="live_chat_onclick()">Live Chat</button>
+</div>
+
+<div class="chat-room  shadow-needed" id="chat-room-box" style="display: none;">
+    <div id="chat-room-header">Chat Room</div>
+
+    <div id="msg-box">
+        <div class="msg-item">
+            <div class="talk-name">
+                <div class="others-name">佩琪</div>
+            </div>
+            <div class="talk-bubble bubble">
+                <div class="bubble-text">
+                    大家好,我是小猪佩奇:)
+                </div>
+            </div>
+        </div>
+        <div style="clear: both"></div>
+        <hr style="visibility: hidden">
+        <div class="msg-item">
+            <div class="self-talk-bubble bubble">
+                <div class="bubble-text">
+                    大家好,我是乔治:)
+                </div>
+            </div>
+            <div class="talk-name" style="">
+            <div class="self-name">乔治</div>
+            </div>
+        </div>
+        <div style="clear: both"></div>
+        <hr style="visibility: hidden">
     </div>
 
-    <footer>
+    <div id="send-box">
+        <div id="chat-input-area"> <textarea id="msg-input" style=""></textarea></div>
+        <div id="send-btn-div">
+            <button id="send-btn" onclick="send_msg()">Send</button>
+        </div>
+    </div>
+</div>
+<div class="container shadow-needed" id="container">
 
-    </footer>
+    <img class="insert-img shadow-needed" src="1920.png">
+
+
+</div>
+
+
+<footer class="shadow-needed">
+
+</footer>
+
+<script>
+    let ws = new WebSocket("ws://moyeeblog.cn:11223");
+
+    ws.onopen = function() {
+        console.log('Connection to server opened');
+    }
+
+
+    ws.onmessage = function(event) {
+        let data = event.data;
+        // 处理数据
+        console.log(data);
+        let msg_box=document.getElementById("msg-box");
+        let msg_item=document.createElement("div");
+        msg_item.setAttribute("class","msg-item");
+        let talk_name=document.createElement("div");
+        talk_name.setAttribute("class","talk-name");
+        let others_name=document.createElement("div");
+        others_name.setAttribute("class","others-name");
+        others_name.innerHTML="刘新月";
+        let bubble=document.createElement("div");
+        bubble.classList.add("bubble","talk-bubble");
+        let bubble_text=document.createElement("div");
+        bubble_text.setAttribute("class","bubble-text");
+        bubble_text.innerHTML=data;
+        bubble.appendChild(bubble_text);
+        talk_name.append(others_name);
+        msg_item.appendChild(talk_name);
+        msg_item.appendChild(bubble);
+        msg_box.append(msg_item);
+        let clear_float=document.createElement("div");
+        clear_float.setAttribute("style","clear:both");
+        msg_box.appendChild(clear_float);
+        let hr=document.createElement("hr");
+        hr.style.visibility="hidden";
+        msg_box.appendChild(hr);
+
+    };
+
+    function live_chat_onclick() {
+        let chat_room_box = document.getElementById("chat-room-box")
+        if (chat_room_box.style.display == "none")
+            chat_room_box.style.display = "";
+        else chat_room_box.style.display = "none";
+    }
+
+    function send_msg() {
+        let msg=document.getElementById("msg-input").value;
+        let tem=msg.replace(/\s+/g,"");
+        if (tem==""){
+            return;
+        }
+        let msg_box=document.getElementById("msg-box");
+        let msg_item=document.createElement("div");
+        msg_item.setAttribute("class","msg-item");
+        let talk_name=document.createElement("div");
+        talk_name.setAttribute("class","talk-name");
+        let self_name=document.createElement("div");
+        self_name.setAttribute("class","self-name");
+        self_name.innerHTML="刘新月";
+        let bubble=document.createElement("div");
+        bubble.classList.add("bubble","self-talk-bubble");
+        let bubble_text=document.createElement("div");
+        bubble_text.setAttribute("class","bubble-text");
+        bubble_text.innerHTML=msg;
+        bubble.appendChild(bubble_text);
+        talk_name.appendChild(self_name)
+
+        msg_item.appendChild(bubble);
+        msg_item.appendChild(talk_name);
+        msg_box.append(msg_item);
+        let clear_float=document.createElement("div");
+        clear_float.setAttribute("style","clear:both");
+        msg_box.appendChild(clear_float);
+        let hr=document.createElement("hr");
+        hr.style.visibility="hidden";
+        msg_box.appendChild(hr);
+        /**
+         *   <div style="clear: both"></div>
+         <hr>
+         * @type {string}
+         */
+        document.getElementById("msg-input").value="";
+
+        ws.send(msg);
+    }
+</script>
+
 </body>
